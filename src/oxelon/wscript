@@ -1,0 +1,14 @@
+def build(bld):
+    bld.stlib(
+        target='oxelon',
+        source=[
+            'bit_matrix.cpp'
+            ]
+        )
+
+    bld.program(
+        features='gtest',
+        target='bit_matrix_test',
+        source='bit_matrix_test.cpp',
+        use='oxelon'
+        )
