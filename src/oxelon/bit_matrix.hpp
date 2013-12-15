@@ -166,7 +166,15 @@ class BitMatrix {
   BitMatrix get_quad(int x, int y) const {
     return data_ && (0xF0F0F0Full << x << (y * 0x100000000ull));
   }
-  
+
+  uint32_t upper() const {
+    return data_ >> 32;
+  }
+
+  uint32_t lower() const {
+    return data_;
+  }
+
  private:
   static const data_type EXCEPT_LEFT_ONE;
   static const data_type EXCEPT_RIGHT_ONE;
