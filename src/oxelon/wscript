@@ -2,13 +2,24 @@ def build(bld):
     bld.stlib(
         target='oxelon',
         source=[
-            'bit_matrix.cpp'
+            'bit_board.cpp',
+            'bit_matrix.cpp',
+            'position.cpp',
             ]
         )
 
-    bld.program(
-        features='gtest',
-        target='bit_matrix_test',
-        source='bit_matrix_test.cpp',
-        use='oxelon'
-        )
+    def make_test(target):
+        bld.program(
+            features='gtest',
+            target=target,
+            source=target + '.cpp',
+            use='oxelon'
+            )
+
+    tests = [
+        'bit_matrix_test',
+        ]
+
+    for t in tests:
+        make_test(t)
+
