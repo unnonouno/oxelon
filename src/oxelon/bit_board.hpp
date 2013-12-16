@@ -171,6 +171,12 @@ class BitBoard {
 };
 
 inline
+BitBoard::BitBoard()
+    : disc_map_(),
+      op_map_() {
+}
+
+inline
 BitBoard::BitBoard(const BitBoard& b)
     : disc_map_(b.disc_map_),
       op_map_(b.op_map_)

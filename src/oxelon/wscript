@@ -17,6 +17,7 @@ def build(bld):
             )
 
     tests = [
+        'bit_board_test',
         'bit_matrix_test',
         ]
 
