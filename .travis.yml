@@ -5,7 +5,7 @@ compiler:
 #  - clang
 
 before_install:
-  - sudo pip install cpp-coveralls --use-mirrors
+  - sudo pip install cpp-coveralls
   - wget http://sourceforge.net/projects/boost/files/boost/1.54.0/boost_1_54_0.tar.bz2
   - tar -jxf boost_1_54_0.tar.bz2
   - pushd boost_1_54_0
@@ -17,6 +17,9 @@ before_install:
 script:
   - ./waf configure --enable-gcov
   - ./waf build --checkall
+
+after_success:
+  - coveralls -E '.*_test.cpp'
 
 branches:
   only:
