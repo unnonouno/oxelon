@@ -49,22 +49,22 @@ class Position {
 
   struct left {
     Position operator()(const Position& p) {
-      return Position::LEFT_TABLE[p.pos_];
+      return Position(Position::LEFT_TABLE[p.pos_]);
     }
   };
   struct right {
     Position operator()(const Position& p) {
-      return Position::RIGHT_TABLE[p.pos_];
+      return Position(Position::RIGHT_TABLE[p.pos_]);
     }
   };
   struct up {
     Position operator()(const Position& p) {
-      return Position::UP_TABLE[p.pos_];
+      return Position(Position::UP_TABLE[p.pos_]);
     }
   };
   struct down {
     Position operator()(const Position& p) {
-      return Position::DOWN_TABLE[p.pos_];
+      return Position(Position::DOWN_TABLE[p.pos_]);
     }
   };
   struct up_left {
