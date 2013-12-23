@@ -6,9 +6,9 @@ namespace oxelon {
 
 TEST(BitMatrix, set) {
   BitMatrix m;
-  EXPECT_EQ(false, m[0]);
+  EXPECT_FALSE(m[0]);
   m.set(0);
-  EXPECT_EQ(true, m[0]);
+  EXPECT_TRUE(m[0]);
 }
 
 TEST(BitMatrix, size) {
