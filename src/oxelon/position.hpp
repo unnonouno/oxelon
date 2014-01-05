@@ -97,7 +97,7 @@ class Position {
   static pos_t inverse(pos_t p) {
     return POS_WIDTH-1 - p;
   }
-  
+
   friend struct left;
   friend struct right;
   friend struct up;

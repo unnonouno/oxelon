@@ -1,15 +1,24 @@
 #include "position.hpp"
 
+#include <iostream>
+
 namespace oxelon {
 
 Position::Static Position::Static::inst_;
 
-std::vector<pos_t> Position::LEFT_TABLE(Position::POS_MAX + 1);
-std::vector<pos_t> Position::RIGHT_TABLE(Position::POS_MAX + 1);
-std::vector<pos_t> Position::UP_TABLE(Position::POS_MAX + 1);
-std::vector<pos_t> Position::DOWN_TABLE(Position::POS_MAX + 1);
+std::vector<pos_t> Position::LEFT_TABLE;
+std::vector<pos_t> Position::RIGHT_TABLE;
+std::vector<pos_t> Position::UP_TABLE;
+std::vector<pos_t> Position::DOWN_TABLE;
 
-void Position::init_table(){
+void Position::init_table() {
+  std::cerr << "init table" << std::endl;
+
+  LEFT_TABLE.resize(Position::POS_MAX + 1);
+  RIGHT_TABLE.resize(Position::POS_MAX + 1);
+  UP_TABLE.resize(Position::POS_MAX + 1);
+  DOWN_TABLE.resize(Position::POS_MAX + 1);
+
   for (pos_t y = 0; y < POS_WIDTH; ++y) {
     LEFT_TABLE[Position(0, y)] = POS_PASS;
     RIGHT_TABLE[Position(POS_WIDTH-1, y)] = POS_PASS;
