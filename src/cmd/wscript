@@ -1,0 +1,6 @@
+def build(bld):
+    bld.program(
+        target='endsolver',
+        source='end_game_solver.cpp',
+        use='oxelon'
+    )
