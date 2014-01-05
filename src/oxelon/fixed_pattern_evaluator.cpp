@@ -1,7 +1,5 @@
 #include "fixed_pattern_evaluator.hpp"
 
-#include <boost/preprocessor.hpp>
-
 #include "board.hpp"
 #include "horver.hpp"
 #include "diagonal.hpp"
@@ -29,31 +27,20 @@ FixedPatternEvaluator::FixedPatternEvaluator()
 eval_t
 FixedPatternEvaluator::evaluate(const Board& board, Disc disc) const {
   eval_t ret = 0;
-#define GEN_HOR_VER(z, i, data)                                         \
-  ret += BOOST_PP_CAT(BOOST_PP_CAT(horver_, BOOST_PP_ADD(2, i)), _weights_)[ \
-      HorVer<i+2, false, false>().encode(board, disc)];                 \
-  ret += BOOST_PP_CAT(BOOST_PP_CAT(horver_, BOOST_PP_ADD(2, i)), _weights_)[ \
-      HorVer<i+2, true,  false>().encode(board, disc)];                 \
-  ret += BOOST_PP_CAT(BOOST_PP_CAT(horver_, BOOST_PP_ADD(2, i)), _weights_)[ \
-      HorVer<i+2, false, true>().encode(board, disc)];                  \
-  ret += BOOST_PP_CAT(BOOST_PP_CAT(horver_, BOOST_PP_ADD(2, i)), _weights_)[ \
-      HorVer<i+2, true,  true>().encode(board, disc)];
-  
-  BOOST_PP_REPEAT(3, GEN_HOR_VER, _);
-/*
-#define GEN_DIAG(z, i, data) \
-    ret += BOOST_PP_CAT(BOOST_PP_CAT(diagonal_, BOOST_PP_ADD(4, i)), _weights_)[ \
-      HorVer<i+4, false, false>().encode(board, disc)]; \
-    ret += BOOST_PP_CAT(BOOST_PP_CAT(diagonal_, BOOST_PP_ADD(4, i)), _weights_)[ \
-      HorVer<i+4, true,  false>().encode(board, disc)]; \
-    ret += BOOST_PP_CAT(BOOST_PP_CAT(diagonal_, BOOST_PP_ADD(4, i)), _weights_)[ \
-      HorVer<i+4, false, true>().encode(board, disc)]; \
-    ret += BOOST_PP_CAT(BOOST_PP_CAT(diagonal_, BOOST_PP_ADD(4, i)), _weights_)[ \
-      HorVer<i+4, true,  true>().encode(board, disc)];
- 
-  
-  BOOST_PP_REPEAT(4, GEN_DIAG, _)
- */
+  ret += horver_2_weights_[HorVer<2, false, false>().encode(board, disc)];
+  ret += horver_2_weights_[HorVer<2, true, false>().encode(board, disc)];
+  ret += horver_2_weights_[HorVer<2, false, true>().encode(board, disc)];
+  ret += horver_2_weights_[HorVer<2, true, true>().encode(board, disc)];
+
+  ret += horver_3_weights_[HorVer<3, false, false>().encode(board, disc)];
+  ret += horver_3_weights_[HorVer<3, true, false>().encode(board, disc)];
+  ret += horver_3_weights_[HorVer<3, false, true>().encode(board, disc)];
+  ret += horver_3_weights_[HorVer<3, true, true>().encode(board, disc)];
+
+  ret += horver_4_weights_[HorVer<4, false, false>().encode(board, disc)];
+  ret += horver_4_weights_[HorVer<4, true, false>().encode(board, disc)];
+  ret += horver_4_weights_[HorVer<4, false, true>().encode(board, disc)];
+  ret += horver_4_weights_[HorVer<4, true, true>().encode(board, disc)];
 
   ret += diagonal_4_weights_[Diagonal<4, false, false>().encode(board, disc)];
   ret += diagonal_4_weights_[Diagonal<4, true, false>().encode(board, disc)];

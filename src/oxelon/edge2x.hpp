@@ -1,8 +1,6 @@
 #ifndef EDGE2X_HPP_70B08E37_3923_4CE0_81AB_4870C84F8D81_
 #define EDGE2X_HPP_70B08E37_3923_4CE0_81AB_4870C84F8D81_
 
-#include <boost/preprocessor.hpp>
-
 #include "board.hpp"
 #include "power.hpp"
 
@@ -23,18 +21,15 @@ private:
 // inline methods
 ////////////////////////////////////////////////////////////////////////////////
 
-#define PAT_GROUP_2X                                              \
-  ((0,0)) ((1,0)) ((2,0)) ((3,0)) ((4,0)) ((5,0)) ((6,0)) ((7,0)) \
-          ((1,1))                                 ((6,1))
-
 template <bool Yinv, bool Rot> inline
 unsigned int
 Edge2x<Yinv, Rot>::encode(const Board& b, Disc d) const {
-#define EDGE2X_PAT_GEN(r,p,elem) ret = (ret << 1) + ret;        \
-  ret += b.code_at(conv_pos elem, d);
-  
   unsigned int ret = 0;
-  BOOST_PP_SEQ_FOR_EACH(EDGE2X_PAT_GEN, _, PAT_GROUP_2X)
+  for (int i = 0; i < 8; ++i) {
+    ret = ret * 3 + b.code_at(conv_pos(i, 0), d);
+  }
+  ret = ret * 3 + b.code_at(conv_pos(1, 1), d);
+  ret = ret * 3 + b.code_at(conv_pos(6, 1), d);
   return ret;
 }
 

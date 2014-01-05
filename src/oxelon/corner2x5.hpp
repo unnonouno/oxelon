@@ -1,7 +1,6 @@
 #ifndef CORNER2X5_HPP_74A22E1E_BD8C_4E64_87C5_5411633AD0D0_
 #define CORNER2X5_HPP_74A22E1E_BD8C_4E64_87C5_5411633AD0D0_
 
-#include <boost/preprocessor.hpp>
 #include "board.hpp"
 #include "power.hpp"
 
@@ -22,18 +21,15 @@ class Corner2x5 {
 // inline methods
 ////////////////////////////////////////////////////////////////////////////////
 
-#define PAT_GROUP_2X5 \
-  ((0,0)) ((1,0)) ((2,0)) ((3,0)) ((4,0)) \
-  ((0,1)) ((1,1)) ((2,1)) ((3,1)) ((4,1))
-
 template <bool Xinv, bool Yinv, bool Rot> inline
 unsigned int
 Corner2x5<Xinv, Yinv, Rot>::encode(const Board& b, Disc d) const {
-#define COR2X5_PAT_GEN(r,p,elem) ret = (ret << 1) + ret;        \
-  ret += b.code_at(conv_pos elem, d);
-  
   unsigned int ret = 0;
-  BOOST_PP_SEQ_FOR_EACH(COR2X5_PAT_GEN, _, PAT_GROUP_2X5);
+  for (int y = 0; y < 2; ++y) {
+    for (int x = 0; x < 5; ++x) {
+      ret = ret * 3 + b.code_at(conv_pos(x, y), d);
+    }
+  }
   return ret;
 }
 

@@ -7,12 +7,10 @@ compiler:
 before_install:
   - sudo pip install PyYAML
   - sudo pip install cpp-coveralls
-  - wget http://sourceforge.net/projects/boost/files/boost/1.54.0/boost_1_54_0.tar.bz2
-  - tar -jxf boost_1_54_0.tar.bz2
-  - pushd boost_1_54_0
-  - ./bootstrap.sh --help
-  - sudo ./bootstrap.sh
-  - sudo ./b2 install
+  - git clone https://github.com/pfi/pficommon.git
+  - pushd pficommon
+  - ./waf configure & ./waf build
+  - sudo ./waf install
   - popd
 
 script:

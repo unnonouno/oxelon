@@ -4,7 +4,15 @@ def build(bld):
         source=[
             'bit_board.cpp',
             'bit_matrix.cpp',
+            'blank_table_iterator.cpp',
+            'eval_controller.cpp',
+            'fixed_pattern_evaluator.cpp',
+            'mtdf.cpp',
+            'nega_scout.cpp',
             'position.cpp',
+            'quad_parity_evaluator.cpp',
+            'timer.cpp',
+            'types.cpp',
             ]
         )
 
@@ -19,6 +27,8 @@ def build(bld):
     tests = [
         'bit_board_test',
         'bit_matrix_test',
+        'bit_move_iterator_test',
+        'position_test',
         ]
 
     for t in tests:

@@ -1,10 +1,10 @@
 #include "iterative_deepening.hpp"
 
-
 #include <utility>
 #include <memory>
 
 #include "board.hpp"
+#include "timer.hpp"
 
 namespace oxelon {
 
@@ -30,7 +30,7 @@ std::pair<Position, eval_t> IterativeDeepening::search_next(
     std::pair<Position, eval_t> ret;
     // iterative deepening
     while (true) {
-      boost::timer  t;
+      Timer t;
       if (rest_blank - current_depth_ <= 3 || rest_blank <= exact_depth_) {
         p_solver_->set_max_depth(Board::COUNT_MAX);
       }
@@ -53,7 +53,7 @@ std::pair<Position, eval_t> IterativeDeepening::search_next(
     return ret;
     
   } else {
-    boost::timer  t;
+    Timer t;
     std::pair<Position, eval_t> ret = p_solver_->search_next(board, disc);
     double total_time = t.elapsed();
     rest_time_ -= total_time;

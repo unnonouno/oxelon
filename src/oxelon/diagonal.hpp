@@ -1,7 +1,6 @@
 #ifndef DIAGONAL_HPP_9DBEED72_90D3_4939_B3D3_70FCF4D3387C_
 #define DIAGONAL_HPP_9DBEED72_90D3_4939_B3D3_70FCF4D3387C_
 
-#include <boost/preprocessor.hpp>
 #include "board.hpp"
 #include "power.hpp"
 

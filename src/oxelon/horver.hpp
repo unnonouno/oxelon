@@ -2,7 +2,6 @@
 #define HORVER_HPP_3B0CBA17_9F52_461D_B9D6_D8E86A0FB150_
 
 #include <utility>
-#include <boost/preprocessor.hpp>
 
 #include "board.hpp"
 #include "position.hpp"
@@ -28,11 +27,9 @@ class HorVer {
 template <int N, bool Yinv, bool Rot> inline
 unsigned int HorVer<N, Yinv, Rot>::encode(const Board& b, Disc d) const {
   unsigned int ret = 0;
-#define GEN_HOR_VER_CODE(z, i, data)                                    \
-  ret = (ret << 1) + ret;                                               \
-  ret += b.code_at(conv_pos(i, N-1), d);
-
-  BOOST_PP_REPEAT(8, GEN_HOR_VER_CODE, _)
+  for (int i = 0; i < 8; ++i) {
+    ret = ret * 3 + b.code_at(conv_pos(i, N-1), d);
+  }
   return ret;
 }
 

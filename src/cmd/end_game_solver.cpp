@@ -1,10 +1,9 @@
 #include <iostream>
 #include <fstream>
 
-#include <boost/timer.hpp>
-
 #include "../third_party/cmdline.h"
 
+#include "../oxelon/timer.hpp"
 #include "../oxelon/types.hpp"
 #include "../oxelon/evaluator.hpp"
 #include "../oxelon/mtdf.hpp"
@@ -130,7 +129,7 @@ std::auto_ptr<Solver> select_solver(
 void solve(std::auto_ptr<Solver> solver, Board board, Disc next_move) {
   std::cout << "Start to solve" << std::endl;
   std::cout << " disc: " << next_move << std::endl;
-  boost::timer t;
+  oxelon::Timer t;
   solver->search_next(board, next_move);
   std::cout << t.elapsed() << "sec" << std::endl;
     /*

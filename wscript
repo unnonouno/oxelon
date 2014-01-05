@@ -14,11 +14,11 @@ def options(opt):
                  help='only for debug')
 
 def configure(conf):
-  conf.env.CXXFLAGS += ['-O2', '-Wall', '-g', '-pipe']
+  conf.env.CXXFLAGS += ['-O2', '-Wall', '-g', '-pipe', '-march=corei7']
   conf.load('compiler_cxx')
   conf.load('unittest_gtest')
 
-  # conf.check_cfg(package = 'pficommon', args = '--cflags --libs')
+  conf.check_cfg(package = 'pficommon', args = '--cflags --libs')
   # conf.check_cxx(lib='libname', header_name = 'header.h')
 
   if Options.options.gcov:
