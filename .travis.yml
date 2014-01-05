@@ -19,7 +19,7 @@ script:
   - ./waf build --checkall
 
 after_success:
-  - coveralls -b build -E '.*_test.cpp'
+  - coveralls -b build -r . -E ".*_test.cpp" -e test.cpp -x .cpp -x .hpp
 
 branches:
   only:
