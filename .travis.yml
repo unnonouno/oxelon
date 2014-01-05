@@ -9,7 +9,8 @@ before_install:
   - sudo pip install cpp-coveralls
   - git clone https://github.com/pfi/pficommon.git
   - pushd pficommon
-  - ./waf configure & ./waf build
+  - ./waf configure
+  - ./waf build
   - sudo ./waf install
   - popd
 
