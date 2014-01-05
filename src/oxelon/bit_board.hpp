@@ -2,6 +2,7 @@
 #define BIT_BOARD_HPP_0BDFB0A1_5367_468E_85A1_E8FCF43CCCC2_
 
 #include <vector>
+#include <string>
 
 #include "bit_matrix.hpp"
 #include "position.hpp"
@@ -26,9 +27,11 @@ class BitBoard {
   BitBoard(const Disc*);
 
   BitBoard(const data_type& d, const data_type& b)
-    : disc_map_(d),
-      op_map_(b) {
+      : disc_map_(d),
+        op_map_(b) {
   }
+
+  static BitBoard parse_zebra_board(const std::string& zebra);
 
   BitBoard& operator = (const BitBoard& rhs);
 
@@ -171,12 +174,6 @@ class BitBoard {
 };
 
 inline
-BitBoard::BitBoard()
-    : disc_map_(),
-      op_map_() {
-}
-
-inline
 BitBoard::BitBoard(const BitBoard& b)
     : disc_map_(b.disc_map_),
       op_map_(b.op_map_)
@@ -310,7 +307,9 @@ unsigned BitBoard::count_disc(Disc disc) const {
 
 inline
 int BitBoard::get_score() const {
-  return (count_black() - count_white()) * 1024;
+  int black = count_black();
+  int white = count_white();
+  return (black - white) * 1024;
 }
 
 inline

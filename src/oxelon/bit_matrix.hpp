@@ -2,12 +2,14 @@
 #define BIT_MATRIX_HPP_5DD9761F_E812_4388_99D4_31AE85C9CDE7_
 
 #include <stdint.h>
+#include <string>
+#include <iostream>
 
 namespace oxelon {
 
 class BitMatrix {
  public:
-  static const uint32_t N = 32;
+  static const uint32_t N = 8;
 
   typedef uint64_t data_type;
   typedef uint32_t position_t;
@@ -15,6 +17,8 @@ class BitMatrix {
   BitMatrix();
   BitMatrix(const BitMatrix& b);
   BitMatrix(const data_type& d);
+
+  static BitMatrix parse(const std::string& s);
 
   BitMatrix& operator = (const BitMatrix& rhs);
 
@@ -101,8 +105,6 @@ class BitMatrix {
 
   unsigned size() const;
 
-  static void init_bit_matrix_data();
-
   struct right {
     void operator()(BitMatrix& m) const { m.shift_right(); }
   };
@@ -175,13 +177,29 @@ class BitMatrix {
     return data_;
   }
 
- private:
-  static const data_type EXCEPT_LEFT_ONE;
-  static const data_type EXCEPT_RIGHT_ONE;
-  static const data_type LOWER_TWO_BYTE;
+  std::string to_str() const;
 
  private:
-  data_type data_;
+  static const data_type EXCEPT_LEFT_ONE = 0xFEFEFEFEFEFEFEFEULL;
+  static const data_type EXCEPT_RIGHT_ONE = 0x7F7F7F7F7F7F7F7FULL;
+  static const data_type LOWER_TWO_BYTE = 0xFFFF;
+
+ public:
+   union {
+    data_type data_;
+    struct {
+      uint32_t lower_;
+      uint32_t upper_;
+    };
+    struct {
+      unsigned short lower1_;
+      unsigned short lower2_;
+      unsigned short upper1_;
+      unsigned short upper2_;
+    };
+  };
+
+  //data_type data_;
 };
 
 inline
@@ -271,7 +289,7 @@ void BitMatrix::shift_right() {
 
 inline
 void BitMatrix::shift_up() {
-  data_ >>= N; 
+  data_ >>= N;
 }
 
 inline
