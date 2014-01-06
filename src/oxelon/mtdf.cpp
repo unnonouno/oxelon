@@ -72,14 +72,6 @@ Mtdf::make_blanks(const Board& board) const {
   return v;
 }
 
-inline
-eval_t Mtdf::get_difference(const Board& board, int n_blank) {
-  //count_leaf();
-  eval_t score = (static_cast<int>(board.count_black()) * 2 - 64 + n_blank) * 1024;
-  assert(score == board.get_score());
-  return score;
-}
-
 std::pair<Position, eval_t>
 Mtdf::search_next(const Board& b, Disc d) {
   std::pair<Position, eval_t> res;
@@ -137,7 +129,7 @@ eval_t Mtdf::alpha_beta_with_memory(
 
   eval_t g;
   if (n_blank == 0) {
-    g = get_difference(board, 0);
+    g = board.get_score();
     
   } else if (d == 0) {
     count_leaf();
@@ -153,7 +145,7 @@ eval_t Mtdf::alpha_beta_with_memory(
     unsigned moves_size = moves.size();
     if (moves_size == 0) {
       if (passed) {
-        g = get_difference(board, n_blank);
+        g = board.get_score();
         
       } else {
         Board next_board = board.make_inverse();
@@ -535,7 +527,7 @@ eval_t Mtdf::no_move_ordering_search(const Board& board,
   if (g == -INFINITY_VALUE) {
     // passする
     if (passed) {
-      g = get_difference(board, n_blank);
+      g = board.get_score();
     } else {
       Board next_board = board.make_inverse();
       g = -no_move_ordering_search(next_board, n_blank,
@@ -690,7 +682,7 @@ eval_t Mtdf::no_move_pos_check_search(const Board& board, unsigned n_blank,
     return g;
   } else {
     if (passed) {
-      return get_difference(board, n_blank);
+      return board.get_score();
     } else {
       Board next_board = board.make_inverse();
       return -no_move_pos_check_search(
@@ -719,7 +711,7 @@ eval_t Mtdf::last1_search(const Board& board,
     //    if (d == max_depth_)
     //      next_move_bit_ = moves;
 
-    return get_difference(new_board, 0);
+    return new_board.get_score();
   } else {
     count_node();
     
@@ -728,10 +720,10 @@ eval_t Mtdf::last1_search(const Board& board,
       //      if (d == max_depth_)
       //        next_move_bit_ = moves;
       
-      return -get_difference(new_board, 0);
+      return -new_board.get_score();
     } else {
       // どちらも打てない
-      return -get_difference(new_board, 1);
+      return -new_board.get_score();
     }
   }
 }
@@ -746,7 +738,7 @@ eval_t Mtdf::last1_search(const Board& board,
   //BitBoard new_board(board);
   int delta = board.get_move_count(/*move1, */pos1);
   if (delta != 0) {
-    //return get_difference(new_board, 0);
+    //return new_board.get_score();
     return diff + delta * 2048 + 1024;
   } else {
     count_node();
@@ -756,10 +748,10 @@ eval_t Mtdf::last1_search(const Board& board,
     //if (delta = new_board.try_move(move1, pos1)) {
     delta = new_board.get_move_count(/*move1, */pos1);
     if (delta != 0) {
-      //return -get_difference(new_board, 0);
+      //return -new_board.get_score();
       return diff - delta * 2048 - 1024;
     } else {
-      //return -get_difference(new_board, 1);
+      //return -new_board.get_score();
       return diff;
     }
   }
@@ -783,7 +775,7 @@ eval_t Mtdf::last2_search(
   unsigned pos1 = move1.get_next();
   unsigned pos2 = move2.get_next();
   return last2_search(board, alpha, beta, passed,
-                      get_difference(board, 2),
+                      board.get_score(),
                       /*move1, */pos1,
                       /*move2, */pos2);
 }
@@ -825,7 +817,7 @@ eval_t Mtdf::last2_search(
 
   if (g == -INFINITY_VALUE) {
     if (passed) {
-      //return get_difference(board, 2);
+      //return board.get_score();
       count_leaf();
       return diff;
     } else {
@@ -854,7 +846,7 @@ eval_t Mtdf::last3_search(const Board& board,
   unsigned pos2 = move2.get_next();
   unsigned pos3 = move3.get_next();
 
-  int diff = get_difference(board, 3);
+  int diff = board.get_score();
   return last3_search(board, alpha, beta, passed, diff, pos1, pos2, pos3);
 }
 
@@ -915,7 +907,7 @@ eval_t Mtdf::last3_search(const Board& board,
 
   if (g == -INFINITY_VALUE) {
     if (passed) {
-      //return get_difference(board, 2);
+      //return board.get_score();
       count_leaf();
       return diff;
     } else {
@@ -944,7 +936,7 @@ eval_t Mtdf::last4_search(const Board& board,
   unsigned pos3 = move3.get_next();
   unsigned pos4 = move4.get_next();
 
-  int diff = get_difference(board, 4);
+  int diff = board.get_score();
   int delta;
   
   eval_t g = -INFINITY_VALUE;
@@ -997,7 +989,7 @@ eval_t Mtdf::last4_search(const Board& board,
 
   if (g == -INFINITY_VALUE) {
     if (passed) {
-      //return get_difference(board, 2);
+      //return board.get_score();
       count_leaf();
       return diff;
     } else {

@@ -115,8 +115,6 @@ class Mtdf : public Solver {
 #endif
                   );
 
-  eval_t get_difference(const Board& board, int n_blank);
-
   eval_t last1_search(const Board& board,
                       eval_t alpha, eval_t beta,
                       bool passed);
