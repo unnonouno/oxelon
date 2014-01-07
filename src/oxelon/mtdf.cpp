@@ -779,38 +779,39 @@ eval_t Mtdf::last2_search(
     bool passed,
     unsigned pos1,
     unsigned pos2) {
-  int diff = board.get_score();
   eval_t g = -INFINITY_VALUE;
-  int delta;
-
   count_node();
 
-  BitBoard new_board(board);
-  delta = new_board.try_move(pos1);
-  if (delta != 0) {
-    new_board.inverse();
-    g = -last1_search(new_board, pos2);
-
-    if (beta <= g)
-      return g;
-    new_board = board;
+  {
+    BitBoard new_board(board);
+    if (new_board.try_move(pos1) != 0) {
+      new_board.inverse();
+      g = -last1_search(new_board, pos2);
+      
+      if (beta <= g)
+        return g;
+    }
   }
-  delta = new_board.try_move(pos2);
-  if (delta != 0) {
-    new_board.inverse();
-    g = std::max(g, -last1_search(new_board, pos1));
-    return g;
+  {
+    BitBoard new_board(board);
+    if (new_board.try_move(pos2) != 0) {
+      new_board.inverse();
+      g = std::max(g, -last1_search(new_board, pos1));
+      return g;
+    }
   }
 
   if (g == -INFINITY_VALUE) {
     if (passed) {
-      //return board.get_score();
       count_leaf();
-      return diff;
+      return board.get_score();
     } else {
+      BitBoard new_board(board);
       new_board.inverse();
       return -last2_search(new_board,
-                           -beta, -alpha, true,
+                           -beta,
+                           -alpha,
+                           true,
                            pos1,
                            pos2);
     }
@@ -841,43 +842,43 @@ eval_t Mtdf::last3_search(const Board& board,
                           unsigned pos2,
                           unsigned pos3)
 {
-  int delta;
-  
   eval_t g = -INFINITY_VALUE;
 
   count_node();
 
-  BitBoard new_board(board);
-  delta = new_board.try_move(pos1);
-  if (delta != 0) {
-    new_board.inverse();
-    g = -last2_search(new_board, -beta, -alpha, false,
-                      pos2,
-                      pos3);
-
-    if (beta <= g)
-      return g;
-    alpha = std::max(alpha, g);
-    new_board = board;
+  {
+    BitBoard new_board(board);
+    if (new_board.try_move(pos1) != 0) {
+      new_board.inverse();
+      g = -last2_search(new_board, -beta, -alpha, false,
+                        pos2,
+                        pos3);
+      if (beta <= g)
+        return g;
+      alpha = std::max(alpha, g);
+    }
   }
-  delta = new_board.try_move(pos2);
-  if (delta != 0) {
-    new_board.inverse();
-    g = std::max(g, -last2_search(new_board, -beta, -alpha, false,
-                                  pos1,
-                                  pos3));
-    if (beta <= g)
-      return g;
-    alpha = std::max(alpha, g);
-    new_board = board;
+  {
+    BitBoard new_board(board);
+    if (new_board.try_move(pos2) != 0) {
+      new_board.inverse();
+      g = std::max(g, -last2_search(new_board, -beta, -alpha, false,
+                                    pos1,
+                                    pos3));
+      if (beta <= g)
+        return g;
+      alpha = std::max(alpha, g);
+    }
   }
-  delta = new_board.try_move(pos3);
-  if (delta != 0) {
-    new_board.inverse();
-    g = std::max(g, -last2_search(new_board, -beta, -alpha, false,
-                                  pos1,
-                                  pos2));
-    return g;
+  {
+    BitBoard new_board(board);
+    if (new_board.try_move(pos3) != 0) {
+      new_board.inverse();
+      g = std::max(g, -last2_search(new_board, -beta, -alpha, false,
+                                    pos1,
+                                    pos2));
+      return g;
+    }
   }
 
   if (g == -INFINITY_VALUE) {
@@ -885,6 +886,7 @@ eval_t Mtdf::last3_search(const Board& board,
       count_leaf();
       return board.get_score();
     } else {
+      BitBoard new_board(board);
       new_board.inverse();
       return -last3_search(new_board,
                            -beta, -alpha, true);
@@ -910,59 +912,59 @@ eval_t Mtdf::last4_search(const Board& board,
   unsigned pos3 = move3.get_next();
   unsigned pos4 = move4.get_next();
 
-  int diff = board.get_score();
-  int delta;
-  
   eval_t g = -INFINITY_VALUE;
 
   count_node();
 
-  BitBoard new_board(board);
-  delta = new_board.try_move(pos1);
-  if (delta != 0) {
-    new_board.inverse();
-    g = -last3_search(new_board, -beta, -alpha, false,
-                      pos2, pos3, pos4);
-
-    if (beta <= g)
-      return g;
-    alpha = std::max(alpha, g);
-    new_board = board;
+  {
+    BitBoard new_board(board);
+    if (new_board.try_move(pos1) != 0) {
+      new_board.inverse();
+      g = -last3_search(new_board, -beta, -alpha, false,
+                        pos2, pos3, pos4);
+      if (beta <= g)
+        return g;
+      alpha = std::max(alpha, g);
+    }
   }
-  delta = new_board.try_move(pos2);
-  if (delta != 0) {
-    new_board.inverse();
-    g = std::max(g, -last3_search(new_board, -beta, -alpha, false,
-                                  pos1, pos3, pos4));
-    if (beta <= g)
-      return g;
-    alpha = std::max(alpha, g);
-    new_board = board;
+  {
+    BitBoard new_board(board);
+    if (new_board.try_move(pos2) != 0) {
+      new_board.inverse();
+      g = std::max(g, -last3_search(new_board, -beta, -alpha, false,
+                                    pos1, pos3, pos4));
+      if (beta <= g)
+        return g;
+      alpha = std::max(alpha, g);
+    }
   }
-  delta = new_board.try_move(pos3);
-  if (delta != 0) {
-    new_board.inverse();
-    g = std::max(g, -last3_search(new_board, -beta, -alpha, false,
-                                  pos1, pos2, pos4));
-    if (beta <= g)
-      return g;
-    alpha = std::max(alpha, g);
-    new_board = board;
+  {
+    BitBoard new_board(board);
+    if (new_board.try_move(pos3) != 0) {
+      new_board.inverse();
+      g = std::max(g, -last3_search(new_board, -beta, -alpha, false,
+                                    pos1, pos2, pos4));
+      if (beta <= g)
+        return g;
+      alpha = std::max(alpha, g);
+    }
   }
-  delta = new_board.try_move(pos4);
-  if (delta != 0) {
-    new_board.inverse();
-    g = std::max(g, -last3_search(new_board, -beta, -alpha, false,
-                                  pos1, pos2, pos3));
-    return g;
+  {
+    BitBoard new_board(board);
+    if (new_board.try_move(pos4) != 0) {
+      new_board.inverse();
+      g = std::max(g, -last3_search(new_board, -beta, -alpha, false,
+                                    pos1, pos2, pos3));
+      return g;
+    }
   }
 
   if (g == -INFINITY_VALUE) {
     if (passed) {
-      //return board.get_score();
       count_leaf();
-      return diff;
+      return board.get_score();
     } else {
+      BitBoard new_board(board);
       new_board.inverse();
       return -last4_search(new_board,
                            -beta, -alpha, true);
