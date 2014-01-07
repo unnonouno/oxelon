@@ -697,11 +697,7 @@ eval_t Mtdf::no_move_pos_check_search(const Board& board, unsigned n_blank,
 }
 
 inline
-eval_t Mtdf::last1_search(const Board& board,
-                          eval_t alpha,
-                          eval_t beta,
-                          bool passed)
-{
+eval_t Mtdf::last1_search(const Board& board) {
   count_node();
   
   BitBoard::data_type moves = board.get_blank_bit();
@@ -722,21 +718,18 @@ eval_t Mtdf::last1_search(const Board& board,
       
       return -new_board.get_score();
     } else {
-      // どちらも打てない
       return -new_board.get_score();
     }
   }
 }
 
 inline
-eval_t Mtdf::last1_search(const Board& board,
-                          int diff,
-                          /*const BitBoard::data_type move1, */unsigned pos1)
-{
+eval_t Mtdf::last1_search(const Board& board, unsigned pos1) {
   count_node();
   count_leaf();
+  int diff = board.get_score();
   //BitBoard new_board(board);
-  int delta = board.get_move_count(/*move1, */pos1);
+  int delta = board.get_move_count(pos1);
   if (delta != 0) {
     //return new_board.get_score();
     return diff + delta * 2048 + 1024;
@@ -746,7 +739,7 @@ eval_t Mtdf::last1_search(const Board& board,
     BitBoard new_board(board);
     new_board.inverse();
     //if (delta = new_board.try_move(move1, pos1)) {
-    delta = new_board.get_move_count(/*move1, */pos1);
+    delta = new_board.get_move_count(pos1);
     if (delta != 0) {
       //return -new_board.get_score();
       return diff - delta * 2048 - 1024;
@@ -775,9 +768,8 @@ eval_t Mtdf::last2_search(
   unsigned pos1 = move1.get_next();
   unsigned pos2 = move2.get_next();
   return last2_search(board, alpha, beta, passed,
-                      board.get_score(),
-                      /*move1, */pos1,
-                      /*move2, */pos2);
+                      pos1,
+                      pos2);
 }
   
 eval_t Mtdf::last2_search(
@@ -785,33 +777,28 @@ eval_t Mtdf::last2_search(
     eval_t alpha,
     eval_t beta,
     bool passed,
-    int diff,
-    /*const BitBoard::data_type& move1, */unsigned pos1,
-    /*const BitBoard::data_type& move2, */unsigned pos2) {
-  if (diff != board.get_score()) {
-    std::stringstream ss;
-    ss << diff << " " << board.get_score();
-    throw std::runtime_error(ss.str());
-  }
+    unsigned pos1,
+    unsigned pos2) {
+  int diff = board.get_score();
   eval_t g = -INFINITY_VALUE;
   int delta;
 
   count_node();
 
   BitBoard new_board(board);
-  delta = new_board.try_move(/*move1, */pos1);
+  delta = new_board.try_move(pos1);
   if (delta != 0) {
     new_board.inverse();
-    g = -last1_search(new_board, -(diff + delta * 2048 + 1024), /*move2, */pos2);
+    g = -last1_search(new_board, pos2);
 
     if (beta <= g)
       return g;
     new_board = board;
   }
-  delta = new_board.try_move(/*move2, */pos2);
+  delta = new_board.try_move(pos2);
   if (delta != 0) {
     new_board.inverse();
-    g = std::max(g, -last1_search(new_board, -(diff + delta * 2048 + 1024), /*move1, */pos1));
+    g = std::max(g, -last1_search(new_board, pos1));
     return g;
   }
 
@@ -824,9 +811,8 @@ eval_t Mtdf::last2_search(
       new_board.inverse();
       return -last2_search(new_board,
                            -beta, -alpha, true,
-                           -diff,
-                           /*move1, */pos1,
-                           /*move2, */pos2);
+                           pos1,
+                           pos2);
     }
   }
   return g;
@@ -846,23 +832,15 @@ eval_t Mtdf::last3_search(const Board& board,
   unsigned pos2 = move2.get_next();
   unsigned pos3 = move3.get_next();
 
-  int diff = board.get_score();
-  return last3_search(board, alpha, beta, passed, diff, pos1, pos2, pos3);
+  return last3_search(board, alpha, beta, passed, pos1, pos2, pos3);
 }
 
 eval_t Mtdf::last3_search(const Board& board,
                           eval_t alpha, eval_t beta, bool passed,
-                          int diff,
                           unsigned pos1,
                           unsigned pos2,
                           unsigned pos3)
 {
-  if (diff != board.get_score()) {
-    std::stringstream ss;
-    ss << "last3: " << diff << " " << board.get_score();
-    throw std::runtime_error(ss.str());
-  }
-
   int delta;
   
   eval_t g = -INFINITY_VALUE;
@@ -870,46 +848,42 @@ eval_t Mtdf::last3_search(const Board& board,
   count_node();
 
   BitBoard new_board(board);
-  delta = new_board.try_move(/*move1, */pos1);
+  delta = new_board.try_move(pos1);
   if (delta != 0) {
     new_board.inverse();
     g = -last2_search(new_board, -beta, -alpha, false,
-                      -(diff + delta * 2048 + 1024),
-                      /*move2, */pos2,
-                      /*move3, */pos3);
+                      pos2,
+                      pos3);
 
     if (beta <= g)
       return g;
     alpha = std::max(alpha, g);
     new_board = board;
   }
-  delta = new_board.try_move(/*move2, */pos2);
+  delta = new_board.try_move(pos2);
   if (delta != 0) {
     new_board.inverse();
     g = std::max(g, -last2_search(new_board, -beta, -alpha, false,
-                                  -(diff + delta * 2048 + 1024),
-                                  /*move1, */pos1,
-                                  /*move3, */pos3));
+                                  pos1,
+                                  pos3));
     if (beta <= g)
       return g;
     alpha = std::max(alpha, g);
     new_board = board;
   }
-  delta = new_board.try_move(/*move3, */pos3);
+  delta = new_board.try_move(pos3);
   if (delta != 0) {
     new_board.inverse();
     g = std::max(g, -last2_search(new_board, -beta, -alpha, false,
-                                  -(diff + delta * 2048 + 1024),
-                                  /*move1, */pos1,
-                                  /*move2, */pos2));
+                                  pos1,
+                                  pos2));
     return g;
   }
 
   if (g == -INFINITY_VALUE) {
     if (passed) {
-      //return board.get_score();
       count_leaf();
-      return diff;
+      return board.get_score();
     } else {
       new_board.inverse();
       return -last3_search(new_board,
@@ -948,7 +922,6 @@ eval_t Mtdf::last4_search(const Board& board,
   if (delta != 0) {
     new_board.inverse();
     g = -last3_search(new_board, -beta, -alpha, false,
-                      -(diff + delta * 2048 + 1024),
                       pos2, pos3, pos4);
 
     if (beta <= g)
@@ -960,7 +933,6 @@ eval_t Mtdf::last4_search(const Board& board,
   if (delta != 0) {
     new_board.inverse();
     g = std::max(g, -last3_search(new_board, -beta, -alpha, false,
-                                  -(diff + delta * 2048 + 1024),
                                   pos1, pos3, pos4));
     if (beta <= g)
       return g;
@@ -971,7 +943,6 @@ eval_t Mtdf::last4_search(const Board& board,
   if (delta != 0) {
     new_board.inverse();
     g = std::max(g, -last3_search(new_board, -beta, -alpha, false,
-                                  -(diff + delta * 2048 + 1024),
                                   pos1, pos2, pos4));
     if (beta <= g)
       return g;
@@ -982,7 +953,6 @@ eval_t Mtdf::last4_search(const Board& board,
   if (delta != 0) {
     new_board.inverse();
     g = std::max(g, -last3_search(new_board, -beta, -alpha, false,
-                                  -(diff + delta * 2048 + 1024),
                                   pos1, pos2, pos3));
     return g;
   }

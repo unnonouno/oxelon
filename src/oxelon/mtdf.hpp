@@ -115,13 +115,10 @@ class Mtdf : public Solver {
 #endif
                   );
 
-  eval_t last1_search(const Board& board,
-                      eval_t alpha, eval_t beta,
-                      bool passed);
+  eval_t last1_search(const Board& board);
 
   eval_t last1_search(const Board& board,
-                      int diff,
-                      /*const BitBoard::data_type move1, */unsigned pos1);
+                      unsigned pos1);
 
   eval_t last2_search(const Board& board,
                       eval_t alpha, eval_t beta,
@@ -129,17 +126,14 @@ class Mtdf : public Solver {
 
   eval_t last2_search(const Board& board,
                       eval_t alpha, eval_t beta, bool passed,
-                      int diff,
-                      /*const BitBoard::data_type& move1, */unsigned pos1,
-                      /*const BitBoard::data_type& move2, */unsigned pos2
-                      );
+                      unsigned pos1,
+                      unsigned pos2);
 
   eval_t last3_search(const Board& board,
                       eval_t alpha, eval_t beta,
                       bool passed);
   eval_t last3_search(const Board& board,
                       eval_t alpha, eval_t beta, bool passed,
-                      int diff,
                       unsigned pos1,
                       unsigned pos2,
                       unsigned pos3);
