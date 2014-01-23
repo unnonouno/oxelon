@@ -1,4 +1,6 @@
 def build(bld):
+    bld(rule='ruby ${SRC} > ${TGT}', source='flip.rb', target='flip.hpp')
+
     bld.stlib(
         target='oxelon',
         source=[
@@ -13,7 +15,8 @@ def build(bld):
             'quad_parity_evaluator.cpp',
             'timer.cpp',
             'types.cpp',
-            ]
+            ],
+        includes='.',
         )
 
     def make_test(target):
