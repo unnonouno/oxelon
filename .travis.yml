@@ -23,7 +23,7 @@ script:
   - ./waf build --checkall
 
 after_success:
-  - coveralls -b build -r . -E ".*_test.cpp" -E ".*/.unittest-gtest/.*" -e test.cpp -x .cpp -x .hpp
+  - coveralls -b build -r . -E ".*_test.cpp" -E ".*/.unittest-gtest/.*" -E "pficommon/.*" -e test.cpp -x .cpp -x .hpp
 
 branches:
   only:
